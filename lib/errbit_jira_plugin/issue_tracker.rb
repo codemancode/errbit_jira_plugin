@@ -2,9 +2,6 @@ require 'jira'
 
 module ErrbitJiraPlugin
   class IssueTracker < ErrbitPlugin::IssueTracker
-
-    attr_accessor :client
-
     LABEL = 'jira'
 
     NOTE = 'Please configure Jira by entering your <strong>username</strong>, <strong>password</strong> and <strong>Jira install url</strong>.'
@@ -65,7 +62,7 @@ module ErrbitJiraPlugin
     end
 
     def jira_client
-      @client ||= JIRA::Client.new({:username => params['username'], :password => params['password'], :site => params['site'], :auth_type => :basic, :context_path => params['context_path']})
+      JIRA::Client.new({:username => params['username'], :password => params['password'], :site => params['site'], :auth_type => :basic, :context_path => params['context_path']})
     end
 
     def create_issue(problem, reported_by = nil)
