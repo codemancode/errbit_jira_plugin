@@ -77,7 +77,7 @@ module ErrbitJiraPlugin
         #issue.fetch
 
         problem.update_attributes(
-          :issue_link => jira_url(issue.fetch),
+          :issue_link => jira_url(issue),
           :issue_type => 'Bug'
         )
 
