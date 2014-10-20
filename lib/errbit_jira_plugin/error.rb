@@ -1,3 +1,3 @@
 module ErrbitJiraPlugin
-  class AuthenticationError < Exception; end
+  class IssueError < Exception; end
 end

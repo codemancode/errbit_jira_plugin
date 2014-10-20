@@ -96,8 +96,8 @@ module ErrbitJiraPlugin
           :issue_type => 'Bug'
         )
 
-      rescue Jira::Error::Unauthorized
-        raise ErrbitJiraPlugin::AuthenticationError, "Could not authenticate with Jira.  Please check your credentials."
+      rescue JIRA::HTTPError
+        raise ErrbitJiraPlugin::IssueError, "Could not create an issue with Jira.  Please check your credentials."
       end
     end
 
