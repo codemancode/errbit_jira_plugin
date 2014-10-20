@@ -76,14 +76,14 @@ module ErrbitJiraPlugin
           :kind => 'bug',
           :priority => 'major'
         }
-        project = jira_client.Project.find(10000)
-        issue = jira_client.Issue.build
-        issue.save({"fields"=>{"summary"=>issue_params, "project"=>{"id"=>"10000"},"issuetype"=>{"id"=>"3"}}})
+        # project = jira_client.Project.find(10000)
+        # issue = jira_client.Issue.build
+        # issue.save({"fields"=>{"summary"=>issue_params, "project"=>{"id"=>"10000"},"issuetype"=>{"id"=>"3"}}})
         
-        problem.update_attributes(
-          :issue_link => jira_url(issue),
-          :issue_type => 'Bug'
-        )
+        # problem.update_attributes(
+        #   :issue_link => jira_url(issue),
+        #   :issue_type => 'Bug'
+        # )
 
       rescue JIRA::HTTPError
         raise ErrbitJiraPlugin::IssueError, "Could not create an issue with Jira.  Please check your credentials."
