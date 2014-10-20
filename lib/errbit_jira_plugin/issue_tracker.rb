@@ -75,9 +75,10 @@ module ErrbitJiraPlugin
         project = client.Project.find(params['project_id'])
         issue = client.Issue.build
         issue.save({"fields"=>{"summary"=>issue_params, "project"=>{"id"=>"10000"},"issuetype"=>{"id"=>"3"}}})
-        
+        issue.fetch
+
         problem.update_attributes(
-          :issue_link => jira_url(issue),
+          :issue_link => jira_url(issue.key),
           :issue_type => 'Bug'
         )
 
@@ -86,9 +87,9 @@ module ErrbitJiraPlugin
       end
     end
 
-    def jira_url(issue)
+    def jira_url(issue_key)
       url = params['site'] << '/' unless params['site'].ends_with?('/')
-      "#{url}browse/#{issue.key}"
+      "#{url}browse/#{issue_key}"
     end
 
     def url
