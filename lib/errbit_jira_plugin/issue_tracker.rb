@@ -73,7 +73,7 @@ module ErrbitJiraPlugin
         issue.save({"fields"=>{"summary"=>issue_title, "description"=>issue_description, "project"=>{"id"=>params['project_id']},"issuetype"=>{"id"=>"3"}}})
 
         problem.update_attributes(
-          :issue_link => jira_url(issue.key),
+          :issue_link => jira_url(issue),
           :issue_type => 'Bug'
         )
 
