@@ -18,9 +18,10 @@ module ErrbitJiraPlugin
         :placeholder => "e.g. https://example.net"
       }],
       [:context_path, {
-        :placeholder => "Context Path if any, typically just /"
+        :placeholder => "Context Path if any"
       }],
       [:project_id, {
+        :label       => "Project ID",
         :placeholder => "Your project id to track issues"
       }]
     ]
@@ -69,16 +70,16 @@ module ErrbitJiraPlugin
           :kind => 'bug',
           :priority => 'major'
         }
-        client = JIRA::Client.new({:username => params['username'], :password => params['password'], :site => params['site'], :auth_type => :basic, :context_path => params['context_path']})
+        client = JIRA::Client.new({:username => params['username'], :password => params['password'], :site => params['site'], :auth_type => :basic, :context_path => ''})
         
         project = client.Project.find(params['project_id'])
-        #issue = client.Issue.build
-        # issue.save({"fields"=>{"summary"=>issue_params, "project"=>{"id"=>"10000"},"issuetype"=>{"id"=>"3"}}})
+        issue = client.Issue.build
+        issue.save({"fields"=>{"summary"=>issue_params, "project"=>{"id"=>"10000"},"issuetype"=>{"id"=>"3"}}})
         
-        # problem.update_attributes(
-        #   :issue_link => jira_url(issue),
-        #   :issue_type => 'Bug'
-        # )
+        problem.update_attributes(
+          :issue_link => jira_url(issue),
+          :issue_type => 'Bug'
+        )
 
       rescue JIRA::HTTPError
         raise ErrbitJiraPlugin::IssueError, "Could not create an issue with Jira.  Please check your credentials."
