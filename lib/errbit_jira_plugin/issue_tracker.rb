@@ -96,7 +96,7 @@ module ErrbitJiraPlugin
           :issue_type => 'Bug'
         )
 
-      rescue BitBucket::Error::Unauthorized
+      rescue Jira::Error::Unauthorized
         raise ErrbitJiraPlugin::AuthenticationError, "Could not authenticate with Jira.  Please check your credentials."
       end
     end
