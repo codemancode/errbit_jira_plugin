@@ -9,23 +9,24 @@ module ErrbitJiraPlugin
 
     NOTE = 'Please configure Jira by entering your <strong>username</strong>, <strong>password</strong> and <strong>Jira install url</strong>.'
 
-    FIELDS = {
-      :username => {
+    FIELDS = [
+      [:username, {
         :placeholder => "Your username"
-      },
-      :password => {
+      }],
+      [:password, {
         :placeholder => "Your password"
-      },
-      :site => {
-        :placeholder => "URL of your Jira install"
-      },
-      :context_path => {
-        :placeholder => "Context Path if any"
-      },
-      :project_id => {
+      }],
+      [:site, {
+        :label       => "JIRA Install URL"
+        :placeholder => "e.g. https://example.net"
+      }],
+      [:context_path, {
+        :placeholder => "Context Path if any, typically just /"
+      }],
+      [:project_id, {
         :placeholder => "Your project id to track issues"
-      }
-    }
+      }]
+    ]
 
     def self.label
       LABEL
@@ -48,7 +49,7 @@ module ErrbitJiraPlugin
     end
 
     def configured?
-      project_id
+      params['project_id'].present?
     end
 
     def project_id
@@ -58,17 +59,9 @@ module ErrbitJiraPlugin
     def errors
       errors = []
       if self.class.fields.detect {|f| params[f[0]].blank?}
-        errors << [:base, 'You must specify your Jira username and password.']
+        errors << [:base, 'You must specify your JIRA username, password, your site url, context and project id.']
       end
       errors
-    end
-
-    def check_params
-      if @params['username']
-        {}
-      else
-        { :username => 'Username must be present' }
-      end
     end
 
     def comments_allowed?
@@ -80,6 +73,7 @@ module ErrbitJiraPlugin
     end
 
     def create_issue(problem, reported_by = nil)
+      raise "Create Issue"
       begin
         issue_params = {
           :title => "[#{ problem.environment }][#{ problem.where }] #{problem.message.to_s.truncate(100)}",
