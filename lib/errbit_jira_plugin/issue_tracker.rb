@@ -66,18 +66,17 @@ module ErrbitJiraPlugin
       begin
         issue_params = {
           :title => "[#{ problem.environment }][#{ problem.where }] #{problem.message.to_s.truncate(100)}",
-          :content => self.class.body_template.result(binding).unpack('C*').pack('U*'),
+          :description => self.class.body_template.result(binding).unpack('C*').pack('U*'),
           :kind => 'bug',
           :priority => 'major'
         }
         client = JIRA::Client.new({:username => params['username'], :password => params['password'], :site => params['site'], :auth_type => :basic, :context_path => ''})
         
         issue = client.Issue.build
-        issue.save({"fields"=>{"summary"=>issue_params, "project"=>{"id"=>params['project_id']},"issuetype"=>{"id"=>"3"}}})
-        #issue.fetch
+        issue.save({"fields"=>{"summary"=>issue_params['title'], "description"=>issue_params['description'], "project"=>{"id"=>params['project_id']},"issuetype"=>{"id"=>"3"}}})
 
         problem.update_attributes(
-          :issue_link => jira_url(issue),
+          :issue_link => jira_url(issue.key),
           :issue_type => 'Bug'
         )
 
@@ -86,9 +85,9 @@ module ErrbitJiraPlugin
       end
     end
 
-    def jira_url(issue)
+    def jira_url(key)
       url = params['site'] << '/' unless params['site'].ends_with?('/')
-      "#{url}browse"
+      "#{url}browse/#{key}"
     end
 
     def url
