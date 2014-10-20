@@ -17,7 +17,7 @@ module ErrbitJiraPlugin
         :placeholder => "Your password"
       }],
       [:site, {
-        :label       => "JIRA Install URL"
+        :label       => "JIRA Install URL",
         :placeholder => "e.g. https://example.net"
       }],
       [:context_path, {
