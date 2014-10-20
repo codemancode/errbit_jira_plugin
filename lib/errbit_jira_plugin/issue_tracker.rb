@@ -72,24 +72,23 @@ module ErrbitJiraPlugin
         }
         client = JIRA::Client.new({:username => params['username'], :password => params['password'], :site => params['site'], :auth_type => :basic, :context_path => ''})
         
-        project = client.Project.find(params['project_id'])
         issue = client.Issue.build
         issue.save({"fields"=>{"summary"=>issue_params, "project"=>{"id"=>params['project_id']},"issuetype"=>{"id"=>"3"}}})
         issue.fetch
 
-        # problem.update_attributes(
-        #   :issue_link => jira_url(issue.key),
-        #   :issue_type => 'Bug'
-        # )
+        problem.update_attributes(
+          :issue_link => jira_url(issue),
+          :issue_type => 'Bug'
+        )
 
       rescue JIRA::HTTPError
         raise ErrbitJiraPlugin::IssueError, "Could not create an issue with Jira.  Please check your credentials."
       end
     end
 
-    def jira_url(issue_key)
+    def jira_url(issue)
       url = params['site'] << '/' unless params['site'].ends_with?('/')
-      "#{url}browse/#{issue_key}"
+      "#{url}browse/#{issue.key}"
     end
 
     def url
