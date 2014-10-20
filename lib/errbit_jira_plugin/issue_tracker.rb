@@ -70,7 +70,7 @@ module ErrbitJiraPlugin
           :priority => 'major'
         }
         client = JIRA::Client.new({:username => params['username'], :password => params['password'], :site => params['site'], :auth_type => :basic, :context_path => params['context_path']})
-    
+        puts client.inspect
         #project = client.Project.find(10000)
         #issue = client.Issue.build
         # issue.save({"fields"=>{"summary"=>issue_params, "project"=>{"id"=>"10000"},"issuetype"=>{"id"=>"3"}}})
