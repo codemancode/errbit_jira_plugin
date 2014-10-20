@@ -52,7 +52,7 @@ module ErrbitJiraPlugin
     end
 
     def project_id
-      app.bitbucket_repo
+      options['project_id']
     end
 
     def errors
@@ -87,9 +87,9 @@ module ErrbitJiraPlugin
           :kind => 'bug',
           :priority => 'major'
         }
-        project = jira_client.Project.find(params['project_id'])
+        project = jira_client.Project.find(project_id)
         issue = jira_client.Issue.build
-        issue.save({"fields"=>{"summary"=>issue_params, "project"=>{"id"=>project.id},"issuetype"=>{"id"=>"3"}}})
+        issue.save({"fields"=>{"summary"=>issue_params, "project"=>{"id"=>project_id},"issuetype"=>{"id"=>"3"}}})
         
         problem.update_attributes(
           :issue_link => jira_url(issue),
