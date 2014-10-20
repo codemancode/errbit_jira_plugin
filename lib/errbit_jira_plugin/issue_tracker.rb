@@ -52,10 +52,6 @@ module ErrbitJiraPlugin
       params['project_id'].present?
     end
 
-    def project_id
-      params['project_id']
-    end
-
     def errors
       errors = []
       if self.class.fields.detect {|f| params[f[0]].blank?}
@@ -73,7 +69,6 @@ module ErrbitJiraPlugin
     end
 
     def create_issue(problem, reported_by = nil)
-      raise "Create Issue"
       begin
         issue_params = {
           :title => "[#{ problem.environment }][#{ problem.where }] #{problem.message.to_s.truncate(100)}",
@@ -81,9 +76,9 @@ module ErrbitJiraPlugin
           :kind => 'bug',
           :priority => 'major'
         }
-        project = jira_client.Project.find(project_id)
+        project = jira_client.Project.find(params['project_id'])
         issue = jira_client.Issue.build
-        issue.save({"fields"=>{"summary"=>issue_params, "project"=>{"id"=>project_id},"issuetype"=>{"id"=>"3"}}})
+        issue.save({"fields"=>{"summary"=>issue_params, "project"=>{"id"=>params['project_id']},"issuetype"=>{"id"=>"3"}}})
         
         problem.update_attributes(
           :issue_link => jira_url(issue),
