@@ -76,8 +76,8 @@ module ErrbitJiraPlugin
           :kind => 'bug',
           :priority => 'major'
         }
-        # project = jira_client.Project.find(10000)
-        # issue = jira_client.Issue.build
+        project = jira_client.Project.find(10000)
+        issue = jira_client.Issue.build
         # issue.save({"fields"=>{"summary"=>issue_params, "project"=>{"id"=>"10000"},"issuetype"=>{"id"=>"3"}}})
         
         # problem.update_attributes(
