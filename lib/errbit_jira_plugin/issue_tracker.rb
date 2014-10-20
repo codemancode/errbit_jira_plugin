@@ -64,20 +64,16 @@ module ErrbitJiraPlugin
 
     def create_issue(problem, reported_by = nil)
       begin
-        issue_params = {
-          :title => "[#{ problem.environment }][#{ problem.where }] #{problem.message.to_s.truncate(100)}",
-          :description => self.class.body_template.result(binding).unpack('C*').pack('U*'),
-          :kind => 'bug',
-          :priority => 'major'
-        }
+        issue_title =  "[#{ problem.environment }][#{ problem.where }] #{problem.message.to_s.truncate(100)}",
+        issue_description = self.class.body_template.result(binding).unpack('C*').pack('U*'),
+          
         client = JIRA::Client.new({:username => params['username'], :password => params['password'], :site => params['site'], :auth_type => :basic, :context_path => ''})
         
         issue = client.Issue.build
-        issue.save({"fields"=>{"summary"=>issue_params['title'], "description"=>issue_params['description'], "project"=>{"id"=>params['project_id']},"issuetype"=>{"id"=>"3"}}})
-        project_id = issue.key
+        issue.save({"fields"=>{"summary"=>issue_title, "description"=>issue_description, "project"=>{"id"=>params['project_id']},"issuetype"=>{"id"=>"3"}}})
 
         problem.update_attributes(
-          :issue_link => jira_url(project_id),
+          :issue_link => jira_url(issue.key),
           :issue_type => 'Bug'
         )
 
