@@ -52,7 +52,7 @@ module ErrbitJiraPlugin
     end
 
     def project_id
-      options['project_id']
+      @attributes['options']['project_id']
     end
 
     def errors
