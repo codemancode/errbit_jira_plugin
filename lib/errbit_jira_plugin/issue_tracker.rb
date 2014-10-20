@@ -65,7 +65,7 @@ module ErrbitJiraPlugin
     def create_issue(problem, reported_by = nil)
       begin
         #issue_title =  "[#{ problem.environment }][#{ problem.where }] #{problem.message.to_s.truncate(100)}",
-        issue_title =  problem.message.to_s,
+        issue_title =  String.new(problem.message.to_s.truncate(100)),
         issue_description = self.class.body_template.result(binding).unpack('C*').pack('U*'),
           
         client = JIRA::Client.new({:username => params['username'], :password => params['password'], :site => params['site'], :auth_type => :basic, :context_path => ''})
