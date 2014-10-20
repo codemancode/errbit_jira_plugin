@@ -89,7 +89,7 @@ module ErrbitJiraPlugin
     def jira_url(issue)
       issue.fetch
       url = params['site'] << '/' unless params['site'].ends_with?('/')
-      "#{url}browse/#{issue.key}"
+      "#{url}browse"
     end
 
     def url
