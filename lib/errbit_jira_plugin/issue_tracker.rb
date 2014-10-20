@@ -61,10 +61,6 @@ module ErrbitJiraPlugin
       false
     end
 
-    def jira_client
-      JIRA::Client.new({:username => params['username'], :password => params['password'], :site => params['site'], :auth_type => :basic, :context_path => params['context_path']})
-    end
-
     def create_issue(problem, reported_by = nil)
       begin
         issue_params = {
@@ -73,8 +69,10 @@ module ErrbitJiraPlugin
           :kind => 'bug',
           :priority => 'major'
         }
-        project = jira_client.Project.find(10000)
-        issue = jira_client.Issue.build
+        client = JIRA::Client.new({:username => params['username'], :password => params['password'], :site => params['site'], :auth_type => :basic, :context_path => params['context_path']})
+    
+        project = client.Project.find(10000)
+        issue = client.Issue.build
         # issue.save({"fields"=>{"summary"=>issue_params, "project"=>{"id"=>"10000"},"issuetype"=>{"id"=>"3"}}})
         
         # problem.update_attributes(
