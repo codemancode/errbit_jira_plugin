@@ -74,7 +74,7 @@ module ErrbitJiraPlugin
         
         issue = client.Issue.build
         issue.save({"fields"=>{"summary"=>issue_params, "project"=>{"id"=>params['project_id']},"issuetype"=>{"id"=>"3"}}})
-        issue.fetch
+        #issue.fetch
 
         problem.update_attributes(
           :issue_link => jira_url(issue),
