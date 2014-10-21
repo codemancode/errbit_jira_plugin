@@ -104,11 +104,14 @@ module ErrbitJiraPlugin
         issue_description = self.class.body_template.result(binding).unpack('C*').pack('U*')
         
         issue = {"fields"=>{"summary"=>issue_title, "description"=>issue_description, "assignee"=>{}, "components"=>{}, "project"=>{"key"=>params['project_id']},"issuetype"=>{"name"=>params['issue_type']},"priority"=>{"name"=>params['issue_priority']}}}
+        
         if params['account']
           issue[:fields][:assignee] = {:name => params['account']}
+        end
 
         if params['issue_component']
-          issue[:fields][:components] = {:name => params['issue_component']} 
+          issue[:fields][:components] = {:name => params['issue_component']}
+        end
 
         issue_build = client.Issue.build
         issue_build.save(issue)
