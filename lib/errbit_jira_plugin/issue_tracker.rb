@@ -69,8 +69,8 @@ module ErrbitJiraPlugin
     def create_issue(problem, reported_by = nil)
       @logger = defined?(Rails) ? Rails.logger : Logger.new(STDOUT)
       begin
-        issue_title =  "[#{ problem.environment }][#{ problem.where }] #{problem.message.to_s.truncate(100)}",
-        issue_description = self.class.body_template.result(binding).unpack('C*').pack('U*'),
+        issue_title =  "[#{ problem.environment }][#{ problem.where }] #{problem.message.to_s.truncate(100)}"
+        issue_description = self.class.body_template.result(binding).unpack('C*').pack('U*')
         @logger.info "Issue title [#{issue_title}]"
         issue = client.Issue.build
         issue.save({"fields"=>{"summary"=>issue_title, "description"=>issue_description, "project"=>{"id"=>params['project_id']},"issuetype"=>{"id"=>"3"}}})
