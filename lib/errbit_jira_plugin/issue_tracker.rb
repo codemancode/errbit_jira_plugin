@@ -101,7 +101,7 @@ module ErrbitJiraPlugin
         issue_title =  "[#{ problem.environment }][#{ problem.where }] #{problem.message.to_s.truncate(100)}".delete!("\n")
         issue_description = self.class.body_template.result(binding).unpack('C*').pack('U*')
         
-        issue = {"fields"=>{"summary"=>issue_title, "description"=>issue_description, "project"=>{"key"=>params['project_id']},"issuetype"=>{"name"=>params['issue_type']}}})
+        issue = {"fields"=>{"summary"=>issue_title, "description"=>issue_description, "project"=>{"key"=>params['project_id']},"issuetype"=>{"name"=>params['issue_type']}}}
         issue[:fields][:assignee] = {:name => params['account']} if params['account']
 
         issue_build = client.Issue.build
