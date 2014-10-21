@@ -62,13 +62,16 @@ module ErrbitJiraPlugin
       false
     end
 
+    def client
+      JIRA::Client.new({:username => params['username'], :password => params['password'], :site => params['site'], :auth_type => :basic, :context_path => ''})
+    end
+
     def create_issue(problem, reported_by = nil)
+      @logger = defined?(Rails) ? Rails.logger : Logger.new(STDOUT)
       begin
         issue_title =  "[#{ problem.environment }][#{ problem.where }] #{problem.message.to_s.truncate(100)}",
         issue_description = self.class.body_template.result(binding).unpack('C*').pack('U*'),
-          
-        client = JIRA::Client.new({:username => params['username'], :password => params['password'], :site => params['site'], :auth_type => :basic, :context_path => ''})
-        
+        @logger.info issue_title
         issue = client.Issue.build
         issue.save({"fields"=>{"summary"=>issue_title, "description"=>issue_description, "project"=>{"id"=>params['project_id']},"issuetype"=>{"id"=>"3"}}})
 
@@ -83,12 +86,12 @@ module ErrbitJiraPlugin
     end
 
     def jira_url(project_id)
-      url = params['site'] << '/' unless params['site'].ends_with?('/')
+      url = params['site'] + '/' unless params['site'].ends_with?('/')
       "#{url}browse/#{project_id}"
     end
 
     def url
-      "https://www.atlassian.com/software"
+      params['site']
     end
   end
 end
