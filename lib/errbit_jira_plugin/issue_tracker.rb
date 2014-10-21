@@ -69,7 +69,7 @@ module ErrbitJiraPlugin
     def create_issue(problem, reported_by = nil)
       logger = Logger.new(STDOUT)
       begin
-        issue_title =  "[#{ problem.environment }][#{ problem.where }] #{problem.message.to_s.truncate(100)}"
+        issue_title =  "[#{ problem.environment }][#{ problem.where }] #{problem.message.to_s.truncate(100)}".delete!("\n")
         issue_description = self.class.body_template.result(binding).unpack('C*').pack('U*')
         logger.info "======== Issue title [#{issue_title}]"
         issue = client.Issue.build
