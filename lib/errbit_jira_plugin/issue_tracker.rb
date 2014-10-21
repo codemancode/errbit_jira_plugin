@@ -99,10 +99,11 @@ module ErrbitJiraPlugin
 
     def create_issue(problem, reported_by = nil)
       begin
+        logger = Logger.new(STDOUT)
         issue_title =  "[#{ problem.environment }][#{ problem.where }] #{problem.message.to_s.truncate(100)}".delete!("\n")
         issue_description = self.class.body_template.result(binding).unpack('C*').pack('U*')
         
-        issue = {"fields"=>{"summary"=>issue_title, "description"=>issue_description, "project"=>{"key"=>params['project_id']},"issuetype"=>{"name"=>params['issue_type']},"priority"=>{"name"=>params['issue_priority']}}}
+        issue = {"fields"=>{"summary"=>issue_title, "description"=>issue_description, "assignee"=>{}, "components"=>{}, "project"=>{"key"=>params['project_id']},"issuetype"=>{"name"=>params['issue_type']},"priority"=>{"name"=>params['issue_priority']}}}
         issue[:fields][:assignee] = {:name => params['account']} if params['account']
         issue[:fields][:components] = {:name => params['issue_component']} if params['issue_component']
 
@@ -112,7 +113,7 @@ module ErrbitJiraPlugin
 
         problem.update_attributes(
           :issue_link => jira_url(issue_build.key),
-          :issue_type => 'Bug'
+          :issue_type => params['issue_type']
         )
 
       rescue JIRA::HTTPError
