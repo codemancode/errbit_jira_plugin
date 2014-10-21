@@ -36,6 +36,7 @@ module ErrbitJiraPlugin
             :placeholder => "username"
         }],
         [:issue_component, {
+            :optional => true,
             :label => 'Issue category',
             :placeholder => 'Website - Other'
         }],
@@ -101,8 +102,9 @@ module ErrbitJiraPlugin
         issue_title =  "[#{ problem.environment }][#{ problem.where }] #{problem.message.to_s.truncate(100)}".delete!("\n")
         issue_description = self.class.body_template.result(binding).unpack('C*').pack('U*')
         
-        issue = {"fields"=>{"summary"=>issue_title, "description"=>issue_description, "project"=>{"key"=>params['project_id']},"issuetype"=>{"name"=>params['issue_type']}}}
+        issue = {"fields"=>{"summary"=>issue_title, "description"=>issue_description, "project"=>{"key"=>params['project_id']},"issuetype"=>{"name"=>params['issue_type']},"priority"=>{"name"=>params['issue_priority']}}}
         issue[:fields][:assignee] = {:name => params['account']} if params['account']
+        issue[:fields][:components] = {:name => params['issue_component']} if params['issue_component']
 
         issue_build = client.Issue.build
         issue_build.save(issue)
