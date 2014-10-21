@@ -6,24 +6,47 @@ module ErrbitJiraPlugin
 
     NOTE = 'Please configure Jira by entering your <strong>username</strong>, <strong>password</strong> and <strong>Jira install url</strong>.'
 
-    FIELDS = [
-      [:username, {
-        :placeholder => "Your username"
-      }],
-      [:password, {
-        :placeholder => "Your password"
-      }],
-      [:site, {
-        :label       => "JIRA Install URL",
-        :placeholder => "e.g. https://example.net"
-      }],
-      [:context_path, {
-        :placeholder => "Context Path if any"
-      }],
-      [:project_id, {
-        :label       => "Project ID",
-        :placeholder => "Your project id to track issues"
-      }]
+    Fields = [
+        [:base_url, {
+            :label => 'Jira URL without trailing slash',
+            :placeholder => 'https://jira.example.org'
+        }],
+        [:context_path, {
+            :optional => true,
+            :label => 'Context Path (Just "/" if empty otherwise with leading slash)',
+            :placeholder => "/jira"
+        }],
+        [:username, {
+            :optional => true,
+            :label => 'HTTP Basic Auth User',
+            :placeholder => 'johndoe'
+        }],
+        [:password, {
+            :optional => true,
+            :label => 'HTTP Basic Auth Password',
+            :placeholder => 'p@assW0rd'
+        }],
+        [:project_id, {
+            :label => 'Project Key',
+            :placeholder => 'The project Key where the issue will be created'
+        }],
+        [:account, {
+            :optional => true,
+            :label => 'Assign to this user. If empty, Jira takes the project default.',
+            :placeholder => "username"
+        }],
+        [:issue_component, {
+            :label => 'Issue category',
+            :placeholder => 'Website - Other'
+        }],
+        [:issue_type, {
+            :label => 'Issue type',
+            :placeholder => 'Bug'
+        }],
+        [:issue_priority, {
+            :label => 'Priority',
+            :placeholder => 'Normal'
+        }]
     ]
 
     def self.label
@@ -52,8 +75,8 @@ module ErrbitJiraPlugin
 
     def errors
       errors = []
-      if self.class.fields.detect {|f| params[f[0]].blank?}
-        errors << [:base, 'You must specify your JIRA username, password, your site url, context and project id.']
+      if self.class.fields.detect {|f| params[f[0]].blank? && !f[1][:optional]}
+        errors << [:base, 'You must specify all non optional values!']
       end
       errors
     end
@@ -63,18 +86,30 @@ module ErrbitJiraPlugin
     end
 
     def client
-      JIRA::Client.new({:username => params['username'], :password => params['password'], :site => params['site'], :auth_type => :basic, :context_path => ''})
+      options = {
+        :username => params['username'],
+        :password => params['password'],
+        :site => params['site'],
+        :auth_type => :basic,
+        :context_path => params['context_path']
+      }
+      JIRA::Client.new(options)
     end
 
     def create_issue(problem, reported_by = nil)
       begin
         issue_title =  "[#{ problem.environment }][#{ problem.where }] #{problem.message.to_s.truncate(100)}".delete!("\n")
         issue_description = self.class.body_template.result(binding).unpack('C*').pack('U*')
-        issue = client.Issue.build
-        issue.save({"fields"=>{"summary"=>issue_title, "description"=>issue_description, "project"=>{"id"=>params['project_id']},"issuetype"=>{"id"=>"3"}}})
+        
+        issue = {"fields"=>{"summary"=>issue_title, "description"=>issue_description, "project"=>{"key"=>params['project_id']},"issuetype"=>{"name"=>params['issue_type']}}})
+        issue[:fields][:assignee] = {:name => params['account']} if params['account']
+
+        issue_build = client.Issue.build
+        issue_build.save(issue)
+        issue_build.fetch
 
         problem.update_attributes(
-          :issue_link => jira_url(issue.key),
+          :issue_link => jira_url(issue_build.key),
           :issue_type => 'Bug'
         )
 
@@ -84,8 +119,7 @@ module ErrbitJiraPlugin
     end
 
     def jira_url(project_id)
-      url = params['site'] + '/' unless params['site'].ends_with?('/')
-      "#{url}browse/#{project_id}"
+      "#{params['site']}#{params['context_path']}browse/#{project_id}"
     end
 
     def url
