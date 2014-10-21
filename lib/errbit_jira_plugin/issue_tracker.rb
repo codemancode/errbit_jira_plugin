@@ -6,7 +6,7 @@ module ErrbitJiraPlugin
 
     NOTE = 'Please configure Jira by entering your <strong>username</strong>, <strong>password</strong> and <strong>Jira install url</strong>.'
 
-    Fields = [
+    FIELDS = [
         [:base_url, {
             :label => 'Jira URL without trailing slash',
             :placeholder => 'https://jira.example.org'
