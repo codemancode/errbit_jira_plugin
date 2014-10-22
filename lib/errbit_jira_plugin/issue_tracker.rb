@@ -7,7 +7,7 @@ module ErrbitJiraPlugin
     NOTE = 'Please configure Jira by entering your <strong>username</strong>, <strong>password</strong> and <strong>Jira install url</strong>.'
 
     FIELDS = [
-        [:site, {
+        [:base_url, {
             :label => 'Jira URL without trailing slash',
             :placeholder => 'https://jira.example.org'
         }],
@@ -90,7 +90,7 @@ module ErrbitJiraPlugin
       options = {
         :username => params['username'],
         :password => params['password'],
-        :site => params['site'],
+        :site => params['base_url'],
         :auth_type => :basic,
         :context_path => params['context_path']
       }
@@ -123,11 +123,11 @@ module ErrbitJiraPlugin
     end
 
     def jira_url(project_id)
-      "#{params['site']}#{params['context_path']}browse/#{project_id}"
+      "#{params['base_url']}#{params['context_path']}browse/#{project_id}"
     end
 
     def url
-      params['site']
+      params['base_url']
     end
   end
 end
