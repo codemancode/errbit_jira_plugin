@@ -122,6 +122,7 @@ module ErrbitJiraPlugin
     end
 
     def jira_url(project_id)
+      logger = Logger.new(STDOUT)
       logger.info "--- #{project_id}"
       logger.info "--- #{params.inspect}"
       "#{params['base_url']}#{params['context_path']}browse/#{project_id}"
