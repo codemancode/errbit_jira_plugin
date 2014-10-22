@@ -92,7 +92,7 @@ module ErrbitJiraPlugin
         :password => params['password'],
         :site => params['base_url'],
         :auth_type => :basic,
-        :context_path => params['context_path']
+        :context_path => (params['context_path'] == '/') ? params['context_path'] = '' : params['context_path']
       }
       JIRA::Client.new(options)
     end
