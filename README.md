@@ -1,6 +1,6 @@
 # ErrbitJiraPlugin
 
-TODO: Write a gem description
+This gem adds support for JIRA to Errbit.
 
 ## Installation
 
