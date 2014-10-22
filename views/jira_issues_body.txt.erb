@@ -1,44 +1,43 @@
-[See this exception on Errbit](<%= problem.url %> "See this exception on Errbit")
+h3. [See this exception on Errbit|<%= problem.url %>]
 <% if notice = problem.notices.first %>
-# <%= notice.message %> #
-## Summary ##
+h3. <%= notice.message %>
+h2. Summary
 <% if notice.request['url'].present? %>
-  ### URL ###
-  [<%= notice.request['url'] %>](<%= notice.request['url'] %>)"
+  h3. URL
+  [<%= notice.request['url'] %>|<%= notice.request['url'] %>]
 <% end %>
-### Where ###
+
+h3. Where
 <%= notice.where %>
 
-### Occured ###
+h3. Occured
 <%= notice.created_at.to_s(:micro) %>
 
-### Similar ###
+h3. Similar
 <%= (notice.problem.notices_count - 1).to_s %>
 
-## Params ##
-```
+h3. Params
+{code:title=Params|borderStyle=solid}
 <%= pretty_hash(notice.params) %>
-```
+{code}
 
-## Session ##
-```
+
+h3. Session
+{code:title=Session|borderStyle=solid}
 <%= pretty_hash(notice.session) %>
-```
+{code}
 
-## Backtrace ##
-```
-<% notice.backtrace_lines.each do |line| %><%= line.number %>:  <%= line.file_relative %> -> **<%= line.method %>**
+
+h3. Backtrace
+{code:title=Backtrace|borderStyle=solid}
+<% notice.backtrace_lines.each do |line| %>
+	<%= line.number %>:  <%= line.file_relative %> -> <%= line.method %>
 <% end %>
-```
+{code}
 
-## Environment ##
-
-<table>
+h3. Environment
 <% for key, val in notice.env_vars %>
-  <tr>
-    <td><%= key %>:</td>
-    <td><%= val %></td>
-  </tr>
+  *<%= key %>*: <%= val %>\\
 <% end %>
-</table>
+
 <% end %>
