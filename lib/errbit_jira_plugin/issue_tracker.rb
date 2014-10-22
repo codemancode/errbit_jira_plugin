@@ -4,7 +4,7 @@ module ErrbitJiraPlugin
   class IssueTracker < ErrbitPlugin::IssueTracker
     LABEL = 'jira'
 
-    NOTE = 'Please configure Jira by entering your <strong>username</strong>, <strong>password</strong> and <strong>Jira install url</strong>.'
+    NOTE = 'Please configure Jira by entering the information below.'
 
     FIELDS = [
         [:base_url, {
@@ -17,13 +17,11 @@ module ErrbitJiraPlugin
             :placeholder => "/jira"
         }],
         [:username, {
-            :optional => true,
-            :label => 'HTTP Basic Auth User',
+            :label => 'Username',
             :placeholder => 'johndoe'
         }],
         [:password, {
-            :optional => true,
-            :label => 'HTTP Basic Auth Password',
+            :label => 'Password',
             :placeholder => 'p@assW0rd'
         }],
         [:project_id, {
@@ -85,15 +83,13 @@ module ErrbitJiraPlugin
 
     def create_issue(problem, reported_by = nil)
       begin
-        #logger = Logger.new(STDOUT)
         issue_title =  "[#{ problem.environment }][#{ problem.where }] #{problem.message.to_s.truncate(100)}".delete!("\n")
         issue_description = self.class.body_template.result(binding).unpack('C*').pack('U*')
         issue = {"fields"=>{"summary"=>issue_title, "description"=>issue_description,"project"=>{"key"=>params['project_id']},"issuetype"=>{"id"=>"3"},"priority"=>{"name"=>params['issue_priority']}}}
         
         issue_build = client.Issue.build
         issue_build.save(issue)
-        #issue_build.fetch
-        #logger.info "-----** #{issue_build.inspect}"
+        
         problem.update_attributes(
           :issue_link => jira_url(issue_build.key),
           :issue_type => params['issue_type']
@@ -105,8 +101,11 @@ module ErrbitJiraPlugin
     end
 
     def jira_url(project_id)
-      ctx_path = (params['context_path'] == '') ? '/' : params['context_path']
       "#{params['base_url']}#{ctx_path}browse/#{project_id}"
+    end
+
+    def ctx_path
+      (params['context_path'] == '') ? '/' : params['context_path']
     end
 
     def url
