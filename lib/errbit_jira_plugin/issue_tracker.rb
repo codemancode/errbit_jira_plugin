@@ -110,8 +110,7 @@ module ErrbitJiraPlugin
         logger.info "** issue #{issue}"
         issue_build = client.Issue.build
         issue_build.save(issue)
-        issue_build.fetch
-        
+
         problem.update_attributes(
           :issue_link => jira_url(issue_build.key),
           :issue_type => params['issue_type']
