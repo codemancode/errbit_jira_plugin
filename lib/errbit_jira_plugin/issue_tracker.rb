@@ -7,7 +7,7 @@ module ErrbitJiraPlugin
     NOTE = 'Please configure Jira by entering your <strong>username</strong>, <strong>password</strong> and <strong>Jira install url</strong>.'
 
     FIELDS = [
-        [:base_url, {
+        [:site, {
             :label => 'Jira URL without trailing slash',
             :placeholder => 'https://jira.example.org'
         }],
@@ -110,7 +110,8 @@ module ErrbitJiraPlugin
         logger.info "** issue #{issue}"
         issue_build = client.Issue.build
         issue_build.save(issue)
-
+        issue_build.fetch
+        
         problem.update_attributes(
           :issue_link => jira_url(issue_build.key),
           :issue_type => params['issue_type']
