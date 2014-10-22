@@ -106,7 +106,7 @@ module ErrbitJiraPlugin
         #issue_build.fetch
         logger.info "-----** #{issue_build.inspect}"
         problem.update_attributes(
-          :issue_link => jira_url('TEST-13'),
+          :issue_link => jira_url(issue_build.key),
           :issue_type => params['issue_type']
         )
 
