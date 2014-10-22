@@ -99,6 +99,7 @@ module ErrbitJiraPlugin
 
     def create_issue(problem, reported_by = nil)
       begin
+        logger = Logger.new(STDOUT)
         issue_title =  "[#{ problem.environment }][#{ problem.where }] #{problem.message.to_s.truncate(100)}".delete!("\n")
         issue_description = self.class.body_template.result(binding).unpack('C*').pack('U*')
         issue = {"fields"=>{"summary"=>issue_title, "description"=>issue_description,"project"=>{"key"=>params['project_id']},"issuetype"=>{"name"=>params['issue_type']},"priority"=>{"name"=>params['issue_priority']}}}
@@ -106,7 +107,7 @@ module ErrbitJiraPlugin
         #issue[:fields][:components] = {:name => params['issue_component']} if params['issue_component']
         issue_build = client.Issue.build
         issue_build.save(issue)
-
+        logger.info "----- #{issue_build.inspect}"
         problem.update_attributes(
           :issue_link => jira_url('TEST-13'),
           :issue_type => params['issue_type']
