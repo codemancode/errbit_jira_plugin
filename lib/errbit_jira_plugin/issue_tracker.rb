@@ -112,7 +112,7 @@ module ErrbitJiraPlugin
         issue_build.save(issue)
 
         problem.update_attributes(
-          :issue_link => jira_url(issue_build.key),
+          :issue_link => jira_url(issue_build.fetch),
           :issue_type => params['issue_type']
         )
 
@@ -122,7 +122,7 @@ module ErrbitJiraPlugin
     end
 
     def jira_url(project_id)
-      "#{params['base_url']}#{params['context_path']}browse/#{project_id}"
+      "#{params['base_url']}#{params['context_path']}browse/#{project_id.key}"
     end
 
     def url
