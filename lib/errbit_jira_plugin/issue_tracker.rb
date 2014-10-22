@@ -106,6 +106,7 @@ module ErrbitJiraPlugin
         #issue[:fields][:components] = {:name => params['issue_component']} if params['issue_component']
         issue_build = client.Issue.build
         issue_build.save(issue)
+        issue_build.fetch
 
         problem.update_attributes(
           :issue_link => jira_url(issue_build.key),
