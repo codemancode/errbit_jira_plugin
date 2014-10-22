@@ -112,7 +112,7 @@ module ErrbitJiraPlugin
         issue_build.save(issue)
 
         problem.update_attributes(
-          :issue_link => jira_url(issue_build),
+          :issue_link => jira_url(issue_build.fetch),
           :issue_type => params['issue_type']
         )
 
@@ -125,7 +125,8 @@ module ErrbitJiraPlugin
       logger = Logger.new(STDOUT)
       logger.info "--- #{project_id}"
       logger.info "--- #{params.inspect}"
-      "#{params['base_url']}#{params['context_path']}browse/#{project_id}"
+      ctx_path = (params['context_path'] == '') ? '/' : params['context_path']
+      "#{params['base_url']}#{ctx_path}browse/#{project_id.key}"
     end
 
     def url
