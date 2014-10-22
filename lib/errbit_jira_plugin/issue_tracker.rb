@@ -112,7 +112,7 @@ module ErrbitJiraPlugin
         issue_build.save(issue)
 
         problem.update_attributes(
-          :issue_link => jira_url(issue_build.fetch),
+          :issue_link => jira_url(issue_build),
           :issue_type => params['issue_type']
         )
 
