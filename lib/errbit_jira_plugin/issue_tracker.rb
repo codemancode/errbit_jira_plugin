@@ -108,7 +108,7 @@ module ErrbitJiraPlugin
         issue_build.save(issue)
 
         problem.update_attributes(
-          :issue_link => jira_url(issue_build.fetch.key),
+          :issue_link => jira_url('TEST-13'),
           :issue_type => params['issue_type']
         )
 
