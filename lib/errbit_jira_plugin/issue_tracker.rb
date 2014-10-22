@@ -99,20 +99,16 @@ module ErrbitJiraPlugin
 
     def create_issue(problem, reported_by = nil)
       begin
-        logger = Logger.new(STDOUT)
         issue_title =  "[#{ problem.environment }][#{ problem.where }] #{problem.message.to_s.truncate(100)}".delete!("\n")
         issue_description = self.class.body_template.result(binding).unpack('C*').pack('U*')
-        logger.info "** Params #{params.inspect}"
-        logger.info "** Problem #{problem}"
         issue = {"fields"=>{"summary"=>issue_title, "description"=>issue_description,"project"=>{"key"=>params['project_id']},"issuetype"=>{"name"=>params['issue_type']},"priority"=>{"name"=>params['issue_priority']}}}
         #issue[:fields][:assignee] = {:name => params['account']} if params['account']
         #issue[:fields][:components] = {:name => params['issue_component']} if params['issue_component']
-        logger.info "** issue #{issue}"
         issue_build = client.Issue.build
         issue_build.save(issue)
 
         problem.update_attributes(
-          :issue_link => jira_url(issue_build.fetch),
+          :issue_link => jira_url(issue_build.key),
           :issue_type => params['issue_type']
         )
 
@@ -122,11 +118,8 @@ module ErrbitJiraPlugin
     end
 
     def jira_url(project_id)
-      logger = Logger.new(STDOUT)
-      logger.info "--- #{project_id}"
-      logger.info "--- #{params.inspect}"
       ctx_path = (params['context_path'] == '') ? '/' : params['context_path']
-      "#{params['base_url']}#{ctx_path}browse/#{project_id.key}"
+      "#{params['base_url']}#{ctx_path}browse/#{project_id}"
     end
 
     def url
