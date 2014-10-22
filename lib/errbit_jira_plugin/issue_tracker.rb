@@ -82,7 +82,6 @@ module ErrbitJiraPlugin
     end
 
     def create_issue(problem, reported_by = nil)
-      raise "Create Issue"
       begin
         issue_title =  "[#{ problem.environment }][#{ problem.where }] #{problem.message.to_s.truncate(100)}".delete!("\n")
         issue_description = self.class.body_template.result(binding).unpack('C*').pack('U*')
