@@ -6,33 +6,33 @@ module ErrbitJiraPlugin
 
     NOTE = 'Please configure Jira by entering the information below.'
 
-    FIELDS = [
-        [:base_url, {
-            :label => 'Jira URL without trailing slash',
-            :placeholder => 'https://jira.example.org'
-        }],
-        [:context_path, {
-            :optional => true,
-            :label => 'Context Path (Just "/" if empty otherwise with leading slash)',
-            :placeholder => "/jira"
-        }],
-        [:username, {
-            :label => 'Username',
-            :placeholder => 'johndoe'
-        }],
-        [:password, {
-            :label => 'Password',
-            :placeholder => 'p@assW0rd'
-        }],
-        [:project_id, {
-            :label => 'Project Key',
-            :placeholder => 'The project Key where the issue will be created'
-        }],
-        [:issue_priority, {
-            :label => 'Priority',
-            :placeholder => 'Normal'
-        }]
-    ]
+    FIELDS = {
+      :base_url => {
+          :label => 'Jira URL without trailing slash',
+          :placeholder => 'https://jira.example.org'
+      },
+      :context_path => {
+          :optional => true,
+          :label => 'Context Path (Just "/" if empty otherwise with leading slash)',
+          :placeholder => "/jira"
+      },
+      :username => {
+          :label => 'Username',
+          :placeholder => 'johndoe'
+      },
+      :password => {
+          :label => 'Password',
+          :placeholder => 'p@assW0rd'
+      },
+      :project_id => {
+          :label => 'Project Key',
+          :placeholder => 'The project Key where the issue will be created'
+      },
+      :issue_priority => {
+          :label => 'Priority',
+          :placeholder => 'Normal'
+      }
+    }
 
     def self.label
       LABEL
@@ -44,6 +44,20 @@ module ErrbitJiraPlugin
 
     def self.fields
       FIELDS
+    end
+
+    def self.icons
+      @icons ||= {
+        create: [
+          'image/png', ErrbitJiraPlugin.read_static_file('jira_create.png')
+        ],
+        goto: [
+          'image/png', ErrbitJiraPlugin.read_static_file('jira_goto.png'),
+        ],
+        inactive: [
+          'image/png', ErrbitJiraPlugin.read_static_file('jira_inactive.png'),
+        ]
+      }
     end
 
     def self.body_template
@@ -60,7 +74,7 @@ module ErrbitJiraPlugin
 
     def errors
       errors = []
-      if self.class.fields.detect {|f| params[f[0]].blank? && !f[1][:optional]}
+      if self.class.fields.detect {|f| options[f[0]].blank? }
         errors << [:base, 'You must specify all non optional values!']
       end
       errors
