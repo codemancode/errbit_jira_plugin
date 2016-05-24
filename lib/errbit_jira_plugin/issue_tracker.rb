@@ -108,7 +108,7 @@ module ErrbitJiraPlugin
                         }
         jira_issue = client.Issue.build
 
-        issue_build.save(issue_fields)
+        jira_issue.save(issue_fields)
 
         jira_url(issue_build.key)
       rescue JIRA::HTTPError
