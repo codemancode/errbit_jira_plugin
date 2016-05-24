@@ -85,7 +85,7 @@ module ErrbitJiraPlugin
     end
 
     def client
-      options = {
+      jira_options = {
         :username => params['username'],
         :password => params['password'],
         :site => params['base_url'],
@@ -124,6 +124,12 @@ module ErrbitJiraPlugin
 
     def url
       params['base_url']
+    end
+
+    private
+
+    def params
+      options
     end
   end
 end
