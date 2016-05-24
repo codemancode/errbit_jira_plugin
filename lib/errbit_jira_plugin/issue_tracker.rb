@@ -90,7 +90,7 @@ module ErrbitJiraPlugin
         :password => params['password'],
         :site => params['base_url'],
         :auth_type => :basic,
-        :context_path => (params['context_path'] == '/') ? params['context_path'] = '' : params['context_path']
+        :context_path => context_path
       }
       JIRA::Client.new(options)
     end
@@ -117,11 +117,7 @@ module ErrbitJiraPlugin
     end
 
     def jira_url(project_id)
-      "#{params['base_url']}#{ctx_path}browse/#{project_id}"
-    end
-
-    def ctx_path
-      (params['context_path'] == '') ? '/' : params['context_path']
+      "#{params['base_url']}#{context_path}browse/#{project_id}"
     end
 
     def url
@@ -129,6 +125,14 @@ module ErrbitJiraPlugin
     end
 
     private
+
+    def context_path
+      if params['context_path'] == '/')
+        ''
+      else
+        params['context_path']
+      end
+    end
 
     def params
       options
