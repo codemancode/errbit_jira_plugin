@@ -119,7 +119,7 @@ module ErrbitJiraPlugin
     def jira_url(project_id)
       "#{params['base_url']}#{params['context_path']}browse/#{project_id}"
     end
-    
+
     def url
       params['base_url']
     end
@@ -127,7 +127,7 @@ module ErrbitJiraPlugin
     private
 
     def context_path
-      if params['context_path'] == '/')
+      if params['context_path'] == '/'
         ''
       else
         params['context_path']
