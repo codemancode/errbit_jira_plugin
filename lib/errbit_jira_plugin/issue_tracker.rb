@@ -130,10 +130,6 @@ module ErrbitJiraPlugin
 
     private
 
-    def build_issue_fields(title, body)
-
-    end
-
     def params
       options
     end
