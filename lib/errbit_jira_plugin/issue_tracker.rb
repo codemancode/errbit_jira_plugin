@@ -117,9 +117,9 @@ module ErrbitJiraPlugin
     end
 
     def jira_url(project_id)
-      "#{params['base_url']}#{context_path}browse/#{project_id}"
+      "#{params['base_url']}#{params['context_path']}browse/#{project_id}"
     end
-
+    
     def url
       params['base_url']
     end
