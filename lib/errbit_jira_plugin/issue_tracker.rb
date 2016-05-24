@@ -92,7 +92,7 @@ module ErrbitJiraPlugin
         :auth_type => :basic,
         :context_path => context_path
       }
-      JIRA::Client.new(options)
+      JIRA::Client.new(jira_options)
     end
 
     def create_issue(title, body, user: {})
