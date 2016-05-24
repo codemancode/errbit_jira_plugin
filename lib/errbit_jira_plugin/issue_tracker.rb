@@ -95,20 +95,22 @@ module ErrbitJiraPlugin
       JIRA::Client.new(options)
     end
 
-    def create_issue(problem, reported_by = nil)
+    def create_issue(title, body, user: {})
       begin
-        issue_title =  "[#{ problem.environment }][#{ problem.where }] #{problem.message.to_s.truncate(100)}".delete!("\n")
-        issue_description = self.class.body_template.result(binding).unpack('C*').pack('U*')
-        issue = {"fields"=>{"summary"=>issue_title, "description"=>issue_description,"project"=>{"key"=>params['project_id']},"issuetype"=>{"id"=>"3"},"priority"=>{"name"=>params['issue_priority']}}}
-        
-        issue_build = client.Issue.build
-        issue_build.save(issue)
-        
-        problem.update_attributes(
-          :issue_link => jira_url(issue_build.key),
-          :issue_type => params['issue_type']
-        )
+        issue_fields =  {
+                          "fields" => {
+                            "summary" => title,
+                            "description" => body,
+                            "project"=> {"key"=>params['project_id']},
+                            "issuetype"=>{"id"=>"3"},
+                            "priority"=>{"name"=>params['issue_priority']}
+                          }
+                        }
+        jira_issue = client.Issue.build
 
+        issue_build.save(issue_fields)
+
+        jira_url(issue_build.key)
       rescue JIRA::HTTPError
         raise ErrbitJiraPlugin::IssueError, "Could not create an issue with Jira.  Please check your credentials."
       end
@@ -127,6 +129,10 @@ module ErrbitJiraPlugin
     end
 
     private
+
+    def build_issue_fields(title, body)
+
+    end
 
     def params
       options
