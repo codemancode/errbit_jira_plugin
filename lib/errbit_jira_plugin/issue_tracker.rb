@@ -84,28 +84,31 @@ module ErrbitJiraPlugin
       false
     end
 
-    def client
-      jira_options = {
+    def jira_options
+      {
         :username => params['username'],
         :password => params['password'],
         :site => params['base_url'],
         :auth_type => :basic,
         :context_path => context_path
       }
-      JIRA::Client.new(jira_options)
     end
 
     def create_issue(title, body, user: {})
       begin
+        client = JIRA::Client.new(jira_options)
+        project = client.Project.find(params['project_id'])
+
         issue_fields =  {
                           "fields" => {
                             "summary" => title,
                             "description" => body,
-                            "project"=> {"key"=>params['project_id']},
+                            "project"=> {"id"=> project.id},
                             "issuetype"=>{"id"=>"3"},
                             "priority"=>{"name"=>params['issue_priority']}
                           }
                         }
+
         jira_issue = client.Issue.build
 
         jira_issue.save(issue_fields)
