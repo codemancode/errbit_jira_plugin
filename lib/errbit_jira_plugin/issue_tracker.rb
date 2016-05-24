@@ -110,7 +110,7 @@ module ErrbitJiraPlugin
 
         jira_issue.save(issue_fields)
 
-        jira_url(jira_issue.key)
+        jira_url(params['project_id'])
       rescue JIRA::HTTPError
         raise ErrbitJiraPlugin::IssueError, "Could not create an issue with Jira.  Please check your credentials."
       end
