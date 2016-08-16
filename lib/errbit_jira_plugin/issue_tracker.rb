@@ -1,4 +1,4 @@
-require 'jira'
+require 'jira-ruby'
 
 module ErrbitJiraPlugin
   class IssueTracker < ErrbitPlugin::IssueTracker
