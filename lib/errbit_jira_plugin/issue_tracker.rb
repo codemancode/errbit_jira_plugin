@@ -30,7 +30,7 @@ module ErrbitJiraPlugin
       },
       :issue_priority => {
           :label => 'Priority',
-          :placeholder => 'Normal'
+          :placeholder => 'Major'
       }
     }
 
